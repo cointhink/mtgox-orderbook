@@ -1,0 +1,17 @@
+{
+  "name": "mtgox-orderbook",
+  "version":"0.0.1",
+  "private": true,
+  "main":"./index.js",
+  "dependencies": {
+    "socket.io-client":">=0.9.11",
+    "seq":">=0.3.5",
+      "request":""
+  },
+  "devDependencies": {
+    "vows"    :  ">=0.7.0"
+  },
+  "scripts": {
+    "test": "vows --isolate --spec test/*.js"
+  }
+}
