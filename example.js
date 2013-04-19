@@ -13,18 +13,18 @@ obook.on('subscribe', function(channel_id){
   console.log('subscribed '+channel_id)
 })
 
-obook.on('trade.lag', function(trade){
+obook.on('lag', function(lag){
+  console.log('lag! '+JSON.stringify(lag))
+})
+
+obook.on('trade', function(trade){
   console.log('trade! '+JSON.stringify(trade))
 })
 
-obook.on('trade.BTC', function(trade){
-  console.log('trade! '+JSON.stringify(trade))
-})
-
-obook.on('depth.BTCUSD', function(depth){
+obook.on('depth', function(depth){
   console.log('depth! '+JSON.stringify(depth))
 })
 
-obook.on('ticker.BTCUSD', function(ticker){
+obook.on('ticker', function(ticker){
   console.log('ticker! '+JSON.stringify(ticker))
 })

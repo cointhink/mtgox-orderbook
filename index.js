@@ -5,9 +5,11 @@ var Seq = require('seq')
 
 var Mtgox = function(){
   this.socket_url = "https://socketio.mtgox.com/mtgox"
+  this.coin_code = "BTC"
 
-  this.connect = function(socketio){
+  this.connect = function(socketio, currency_code){
     var sockio = this.sockio = socketio.connect(this.socket_url)
+    this.currency_code = currency_code.toUpperCase()
     var that = this
     sockio.on('connect', function() {
       sockio.on('message', function(data){
@@ -43,7 +45,16 @@ var Mtgox = function(){
       this.emit('remark', msg.message)
     }
     if(msg.op == "private") {
-      this.emit(msg.channel_name, msg[msg.private])
+      var parts = msg.channel_name.split('.')
+      var channel_name = parts[0]
+      var currency = parts[1]
+
+      if(currency == this.coin_code ||
+         currency == this.coin_code+this.currency_code) {
+        this.emit(channel_name, msg[msg.private])
+      } else if (msg.channel_name == "trade.lag") {
+        this.emit("lag", msg[msg.private])
+      }
     }
   }
 
