@@ -4,9 +4,10 @@ var request = require('request')
 var Seq = require('seq')
 
 var Mtgox = function(){
-  this.url = "https://socketio.mtgox.com/mtgox"
-  this.connect = function(socketio, currency){
-    var sockio = socketio.connect(this.url)
+  this.socket_url = "https://socketio.mtgox.com/mtgox"
+
+  this.connect = function(socketio){
+    var sockio = this.sockio = socketio.connect(this.socket_url)
     var that = this
     sockio.on('connect', function() {
       sockio.on('message', function(data){
@@ -19,18 +20,18 @@ var Mtgox = function(){
       });
       that.emit('connect')
       that.connected()
-      //that.subscribe(sockio, that.channel_id[currency])
     })
     return this
   }
-  
-  this.subscribe = function(sockio, type){
-    sockio.emit({  "op": "mtgox.subscribe",
-                 "type": type})
+
+  this.subscribe = function(channel){
+    var subscribe_msg = {"op": "mtgox.subscribe",
+                         "type": channel}
+    this.sockio.json.send(subscribe_msg)
   }
-  
-  this.connected = function(){console.log("internal connected")}
-  
+
+  this.connected = function(){}
+
   this.event = function(msg){
     if(msg.op == "subscribe") {
       this.emit('subscribe', msg.channel)
@@ -39,10 +40,13 @@ var Mtgox = function(){
       if(msg.private == "trade") {
         this.emit('trade', msg.trade)
       }
+      if(msg.private == "lag") {
+        this.emit('lag', msg.lag)
+      }
     }
   }
-  
-  this.disconnected = function(){console.log("internal disconnected")}
+
+  this.disconnected = function(){}
 }
 
 util.inherits(Mtgox, events.EventEmitter);
