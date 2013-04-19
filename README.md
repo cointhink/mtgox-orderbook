@@ -1,4 +1,4 @@
-Signals for the Mt.Gox orderbook.
+Signals for the Mt.Gox orderbook from the socket.io streaming API.
 
 ## Getting started
 ```
