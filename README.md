@@ -21,9 +21,11 @@ high: $136.43210 low: $95.00000
 
 # Methods
 * connect(socketio, 'usd')
+
 Connect to MtGox using the socketio object. Listen to depth/trade/ticker messages for the given currency.
 
 * subscribe(channel_name)
+
 Issue a subscribe request for a channel. Currently supported is 'lag'.
 
 # Signals
