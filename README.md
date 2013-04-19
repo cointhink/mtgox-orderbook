@@ -26,7 +26,7 @@ Connect to MtGox using the socketio object. Listen to depth/trade/ticker message
 
 * subscribe(channel_name)
 
-Issue a subscribe request for a channel. Currently supported is 'lag'.
+Issue a subscribe request for a channel. Currently supported is 'lag'. See example.js for usage.
 
 # Signals
 
