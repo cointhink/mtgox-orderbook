@@ -36,13 +36,14 @@ var Mtgox = function(){
     if(msg.op == "subscribe") {
       this.emit('subscribe', msg.channel)
     }
+    if(msg.op == "unsubscribe") {
+      this.emit('unsubscribe', msg.channel)
+    }
+    if(msg.op == "remark") {
+      this.emit('remark', msg.message)
+    }
     if(msg.op == "private") {
-      if(msg.private == "trade") {
-        this.emit('trade', msg.trade)
-      }
-      if(msg.private == "lag") {
-        this.emit('lag', msg.lag)
-      }
+      this.emit(msg.channel_name, msg[msg.private])
     }
   }
 
