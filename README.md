@@ -21,13 +21,11 @@ high: $136.43210 low: $95.00000
 
 # Signals
 
-Use on('signalname', function) to define a callback for each of the available signals.
 
 ## socket.io signals
 
-* connect
-* disconnect
-
+* on('connect')
+* on('disconnect')
 
 ## mtgox signals
 * on('subscribe', function(channel_name))

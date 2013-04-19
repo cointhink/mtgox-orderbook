@@ -1,7 +1,5 @@
 var util = require('util')
 var events = require('events')
-var request = require('request')
-var Seq = require('seq')
 
 var Mtgox = function(){
   this.socket_url = "https://socketio.mtgox.com/mtgox"
