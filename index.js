@@ -2,27 +2,27 @@ var util = require('util')
 var events = require('events')
 
 var Mtgox = function(){
-  this.socket_url = "https://socketio.mtgox.com/mtgox"
+  this.socketio_url = "https://socketio.mtgox.com/mtgox"
   this.coin_code = "BTC"
 
-  this.connect = function(socketio, currency_code){
-    var sockio = this.sockio = socketio.connect(this.socket_url)
+  this.attach = function(socketio, currency_code){
+    this.socketio = socketio
     this.currency_code = currency_code.toUpperCase()
-    this._socketio_setup(sockio)
+    this._socketio_setup()
     return this
   }
 
-  this._socketio_setup = function(socketio){
+  this._socketio_setup = function(){
     var that = this
-    socketio.on('connect', function(){
+    this.socketio.on('connect', function(){
       that.emit('connect')
       that.connected()
     })
-    socketio.on('message', function(data){
-      that.emit('event', data)
+    this.socketio.on('message', function(data){
+      that.emit('message', data)
       that.event(data)
     })
-    socketio.on('disconnect', function(){
+    this.socketio.on('disconnect', function(){
       that.emit('disconnect')
       that.disconnected()
     })
@@ -31,7 +31,7 @@ var Mtgox = function(){
   this.subscribe = function(channel){
     var subscribe_msg = {"op": "mtgox.subscribe",
                          "type": channel}
-    this.sockio.json.send(subscribe_msg)
+    this.socketio.json.send(subscribe_msg)
   }
 
   this.connected = function(){}

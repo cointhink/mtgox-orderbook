@@ -1,7 +1,11 @@
 var socketio = require('socket.io-client')
 var mtgox = require('../mtgox-orderbook')
 
-var obook = mtgox.connect(socketio, 'usd')
+var sockio = socketio.connect(mtgox.socketio_url, {
+  'connect timeout': 1000,
+  'reopen delay': 30
+})
+var obook = mtgox.attach(sockio, 'usd')
 
 obook.on('connect', function(trade){
   console.log('connected to mtgox')

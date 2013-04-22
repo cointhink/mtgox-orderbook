@@ -7,16 +7,18 @@ $ cat > easyticker.js
 var socketio = require('socket.io-client')
 var mtgox = require('mtgox-orderbook')
 
-var obook = mtgox.connect(socketio, 'usd')
+var sockio = socketio.connect(mtgox.socketio_url)
+var obook = mtgox.attach(sockio, 'usd')
 
 obook.on('ticker', function(ticker){
-  console.log("high: "+ticker.high.display+
-              " low: "+ticker.low.display)
+  console.log("high: "+ticker.high.display_short+
+              " low: "+ticker.low.display_short+
+              " last: "+ticker.last.display_short)
 })
 $ node easyticker.js
-high: $136.43210 low: $95.00000
-high: $136.43 low: $95.00
-high: $136.43210 low: $95.00000
+high: $127.30 low: $115.20 last: $126.00
+high: $127.30 low: $115.20 last: $126.78
+high: $127.30 low: $115.20 last: $126.78
 ```
 
 # Methods

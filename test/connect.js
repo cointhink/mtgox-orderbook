@@ -6,7 +6,6 @@ var vows = require('vows'),
 var mtgox = require('../index.js')
 
 var mockio = new EventEmitter()
-var mocketio = nodemock.mock("connect").takes(mtgox.socket_url).returns(mockio)
 
 vows.describe('mtgox-orderbook').addBatch({
     'connect to mtgox': {
@@ -16,7 +15,7 @@ vows.describe('mtgox-orderbook').addBatch({
           // vowjs insists on first param error
           that.callback(null, payload)
         })
-        mtgox.connect(mocketio, 'usd')
+        mtgox.attach(mockio, 'usd')
         mockio.emit('connect')
       },
       'connection succeeds': function () {
