@@ -1,6 +1,6 @@
 {
   "name": "mtgox-orderbook",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Don Park <donp@donp.org>",
   "license": "BSD",
   "main": "./index.js",
