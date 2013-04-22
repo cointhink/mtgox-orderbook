@@ -8,20 +8,24 @@ var Mtgox = function(){
   this.connect = function(socketio, currency_code){
     var sockio = this.sockio = socketio.connect(this.socket_url)
     this.currency_code = currency_code.toUpperCase()
+    this._socketio_setup(sockio)
+    return this
+  }
+
+  this._socketio_setup = function(socketio){
     var that = this
-    sockio.on('connect', function() {
-      sockio.on('message', function(data){
-        that.emit('event', data)
-        that.event(data)
-      });
-      sockio.on('disconnect', function(){
-        that.emit('disconnect')
-        that.disconnected()
-      });
+    socketio.on('connect', function(){
       that.emit('connect')
       that.connected()
     })
-    return this
+    socketio.on('message', function(data){
+      that.emit('event', data)
+      that.event(data)
+    })
+    socketio.on('disconnect', function(){
+      that.emit('disconnect')
+      that.disconnected()
+    })
   }
 
   this.subscribe = function(channel){
@@ -47,13 +51,24 @@ var Mtgox = function(){
       var channel_name = parts[0]
       var currency = parts[1]
 
+      this._private_dispatch(channel_name, currency, msg[msg.private])
+    }
+  }
+
+  this._private_dispatch = function(channel_name, currency, payload){
       if(currency == this.coin_code ||
          currency == this.coin_code+this.currency_code) {
-        this.emit(channel_name, msg[msg.private])
-      } else if (msg.channel_name == "trade.lag") {
-        this.emit("lag", msg[msg.private])
+        this.emit(channel_name, payload)
+        if(channel_name == "depth"){
+          this._update_orderbook(payload)
+        }
+      } else if (channel_name == "trade.lag") {
+        this.emit("lag", payload)
       }
-    }
+  }
+
+  this._update_orderbook = function(depth){
+
   }
 
   this.disconnected = function(){}
