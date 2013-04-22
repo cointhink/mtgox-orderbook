@@ -3,7 +3,7 @@ var mtgox = require('../mtgox-orderbook')
 
 var sockio = socketio.connect(mtgox.socketio_url, {
   'connect timeout': 1000,
-  'reopen delay': 30
+  'reopen delay': 3000
 })
 var obook = mtgox.attach(sockio, 'usd')
 
