@@ -15,9 +15,8 @@ vows.describe('mtgox-orderbook').addBatch({
         mtgox.connect(mocketio, 'usd')
         mockio.emit('connect')
       },
-      'connection succeeds': function (wtf) {
-        console.log('callback wtf '+wtf)
-        assert.isTrue(true);
+      'connection succeeds': function (err) {
+        assert.isUndefined(err);
       },
     }
 }).export(module)
