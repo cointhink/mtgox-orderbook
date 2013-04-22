@@ -13,6 +13,7 @@ vows.describe('mtgox-orderbook').addBatch({
       topic: function(){
         var that = this
         mtgox.on('connect', function(payload){
+          // vowjs insists on first param error
           that.callback(null, payload)
         })
         mtgox.connect(mocketio, 'usd')
@@ -21,6 +22,41 @@ vows.describe('mtgox-orderbook').addBatch({
       'connection succeeds': function () {
         assert.isTrue(true);
       },
+    },
+    'subscribe message':{
+      topic: function(){
+        var that = this
+        mtgox.on('subscribe', function(payload){
+          that.callback(null, payload)
+        })
+        mockio.emit('message',
+          { op: 'subscribe',
+            channel: 'dbf1dee9-4f2e-4a08-8cb7-748919a71b21' })
+      },
+      'signal': function (channel) {
+        assert.equal(channel, 'dbf1dee9-4f2e-4a08-8cb7-748919a71b21')
+      }
+    },
+    'lag message':{
+      topic: function(){
+        var that = this
+        mtgox.on('lag', function(payload){
+          that.callback(null, payload)
+        })
+        mockio.emit('message',
+          { channel: '85174711-be64-4de1-b783-0628995d7914',
+            channel_name: 'trade.lag',
+            op: 'private',
+            origin: 'broadcast',
+            private: 'lag',
+            lag:
+              { qid: '8fd6533c-d863-4218-bd04-859dae934f22',
+                stamp: '1366665922761866',
+                age: 1170860 } })
+      },
+      'signal': function (lag) {
+        assert.equal(lag.stamp, '1366665922761866')
+      }
     },
     'depth message':{
       topic: function(){

@@ -62,7 +62,7 @@ var Mtgox = function(){
         if(channel_name == "depth"){
           this._update_orderbook(payload)
         }
-      } else if (channel_name == "trade.lag") {
+      } else if (channel_name == "trade" && currency == "lag") {
         this.emit("lag", payload)
       }
   }
