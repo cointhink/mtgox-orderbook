@@ -1,19 +1,22 @@
-var vows = require('vows'),
-    assert = require('assert');
-
 var EventEmitter = require('events').EventEmitter;
-var mockio = new EventEmitter()
+var vows = require('vows'),
+    assert = require('assert'),
+    nodemock = require('nodemock');
 
 var mtgox = require('../index.js')
+
+var mockio = new EventEmitter()
+var mocketio = nodemock.mock("connect").takes(mtgox.socket_url).returns(mockio)
 
 vows.describe('mtgox-orderbook').addBatch({
     'connect to mtgox': {
       topic: function(){
-        //mtgox.on('connect', this.callback)
-        // why is this broken
-        mtgox.connect(mockio)
+        mtgox.on('connect', this.callback)
+        mtgox.connect(mocketio, 'usd')
+        mockio.emit('connect')
       },
-      'connection succeeds': function () {
+      'connection succeeds': function (wtf) {
+        console.log('callback wtf '+wtf)
         assert.isTrue(true);
       },
     }

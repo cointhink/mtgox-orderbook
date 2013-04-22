@@ -7,7 +7,8 @@
   "description": "Simple access to the Mt.Gox bitcoin orderbook.",
   "dependencies": {},
   "devDependencies": {
-    "vows": ">=0.7.0"
+    "vows": ">=0.7.0",
+    "nodemock": "0.2.x"
   },
   "scripts": {
     "test": "vows --isolate --spec test/*.js"
