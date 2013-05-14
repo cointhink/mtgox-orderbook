@@ -4,8 +4,8 @@ Signals for the Mt.Gox orderbook from the socket.io streaming API.
 ```
 $ npm install mtgox-orderbook socket.io-client
 $ cat > easyticker.js
-var socketio = require('socket.io-client')
-var mtgox = require('mtgox-orderbook')
+var socketio = require('socket.io-client'),
+    mtgox    = require('mtgox-orderbook')
 
 var sockio = socketio.connect(mtgox.socketio_url)
 var obook = mtgox.attach(sockio, 'usd')
