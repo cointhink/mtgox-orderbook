@@ -8,8 +8,14 @@ var Mtgox = function(){
   this.ws_url = "ws://websocket.mtgox.com/mtgox"
   this.coin_code = 'BTC'
 
+  this.setup = function(ws) {
+    this.ws = ws || new WebSocketClient();
+  }
+
   this.connect = function(currency){
-    this.ws = new WebSocketClient();
+    if(typeof(this.ws) == 'undefined'){
+      this.setup()
+    }
     this._ws_setup()
     this.currency_code = currency.toUpperCase()
     var url = this.ws_url+'?Currency='+this.currency_code

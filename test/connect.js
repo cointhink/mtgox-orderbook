@@ -15,7 +15,8 @@ vows.describe('mtgox-orderbook').addBatch({
           // vowjs insists on first param error
           that.callback(null, payload)
         })
-        mtgox.attach(mockio, 'usd')
+        mtgox.setup(mockio)
+        mtgox.connect('usd')
         mockio.emit('connect')
       },
       'connection succeeds': function () {
