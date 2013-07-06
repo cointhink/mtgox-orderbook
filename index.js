@@ -1,40 +1,60 @@
 var util = require('util')
 var events = require('events')
+var WebSocketClient = require('websocket').client;
 
 var Mtgox = function(){
-  this.socketio_url = "https://socketio.mtgox.com/mtgox"
-  this.coin_code = "BTC"
+  var that = this
+  var message_count = 0
+  this.ws_url = "ws://websocket.mtgox.com/mtgox"
+  this.coin_code = 'BTC'
 
-  this.attach = function(socketio, currency_code){
-    this.socketio = socketio
-    this.currency_code = currency_code.toUpperCase()
-    this._socketio_setup()
+  this.connect = function(currency){
+    this.ws = new WebSocketClient();
+    this._ws_setup()
+    this.currency_code = currency.toUpperCase()
+    var url = this.ws_url+'?Currency='+this.currency_code
+    this.ws.connect(url, null, "http://websocket.mtgox.com");
     return this
   }
 
-  this._socketio_setup = function(){
-    var that = this
-    this.socketio.on('connect', function(){
+  this._ws_setup = function(){
+    that.ws.on('connect', function(connection) {
+      that.connected(connection)
       that.emit('connect')
-      that.connected()
+
+      connection.on('message', function(data){
+        if (data.type === 'utf8') {
+          message = JSON.parse(data.utf8Data)
+          that.emit('message', message)
+          that.event(message)
+          message_count += 1
+        }
+      })
+
+      connection.on('close', function(){
+        that.emit('disconnect')
+        that.disconnected()
+      })
     })
-    this.socketio.on('message', function(data){
-      that.emit('message', data)
-      that.event(data)
-    })
-    this.socketio.on('disconnect', function(){
-      that.emit('disconnect')
-      that.disconnected()
-    })
+  }
+
+  this._send = function(message){
+    that.connection.sendUTF(JSON.stringify(message))
   }
 
   this.subscribe = function(channel){
-    var subscribe_msg = {"op": "mtgox.subscribe",
-                         "type": channel}
-    this.socketio.json.send(subscribe_msg)
+    var channels = {
+      'trades':'dbf1dee9-4f2e-4a08-8cb7-748919a71b21',
+      'ticker':'d5f06780-30a8-4a48-a2f8-7ed181b4a13f',
+      'depth':'24e67e0d-1cad-4cc0-9e7a-f8523ef460fe'
+    }
+    var channel = channels[channel.toLowerCase()]
+    var subscribe_msg = {"op": "subscribe",
+                         "channel": channel}
+    that._send(subscribe_msg)
   }
 
-  this.connected = function(){}
+  this.connected = function(connection){ that.connection = connection }
 
   this.event = function(msg){
     if(msg.op == "subscribe") {
@@ -56,15 +76,15 @@ var Mtgox = function(){
   }
 
   this._private_dispatch = function(channel_name, currency, payload){
-      if(currency == this.coin_code ||
-         currency == this.coin_code+this.currency_code) {
-        this.emit(channel_name, payload)
-        if(channel_name == "depth"){
-          this._update_orderbook(payload)
-        }
-      } else if (channel_name == "trade" && currency == "lag") {
-        this.emit("lag", payload)
+    if(currency == this.coin_code ||
+       currency == this.coin_code+this.currency_code) {
+      this.emit(channel_name, payload)
+      if(channel_name == "depth"){
+        this._update_orderbook(payload)
       }
+    } else if (channel_name == "trade" && currency == "lag") {
+      this.emit("lag", payload)
+    }
   }
 
   this._update_orderbook = function(depth){

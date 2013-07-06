@@ -1,34 +1,28 @@
-var socketio = require('socket.io-client')
 var mtgox = require('../mtgox-orderbook')
 
-var sockio = socketio.connect(mtgox.socketio_url, {
-  'connect timeout': 1000,
-  'reopen delay': 3000
-})
-var obook = mtgox.attach(sockio, 'usd')
-
-obook.on('connect', function(trade){
+mtgox.on('connect', function(trade){
   console.log('connected to mtgox')
-  // mtgox is happier if the lag subscribe comes a moment after connecting
-  setTimeout(function(){obook.subscribe("lag")}, 1000)
+  mtgox.subscribe('ticker')
 })
 
-obook.on('subscribe', function(channel_id){
+mtgox.on('subscribe', function(channel_id){
   console.log('subscribed '+channel_id)
 })
 
-obook.on('lag', function(lag){
+mtgox.on('lag', function(lag){
   console.log('lag! '+JSON.stringify(lag))
 })
 
-obook.on('trade', function(trade){
+mtgox.on('trade', function(trade){
   console.log('trade! '+JSON.stringify(trade))
 })
 
-obook.on('depth', function(depth){
+mtgox.on('depth', function(depth){
   console.log('depth! '+JSON.stringify(depth))
 })
 
-obook.on('ticker', function(ticker){
+mtgox.on('ticker', function(ticker){
   console.log('ticker! '+JSON.stringify(ticker))
 })
+
+mtgox.connect('usd')
