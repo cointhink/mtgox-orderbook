@@ -1,20 +1,19 @@
-Signals for the Mt.Gox orderbook from the socket.io streaming API.
+Signals for the Mt.Gox orderbook from the streaming API.
 
 ## Getting started
 ```
-$ npm install mtgox-orderbook socket.io-client
+$ npm install mtgox-orderbook
 $ cat > easyticker.js
-var socketio = require('socket.io-client'),
-    mtgox    = require('mtgox-orderbook')
+var mtgox    = require('mtgox-orderbook')
 
-var sockio = socketio.connect(mtgox.socketio_url)
-var obook = mtgox.attach(sockio, 'usd')
-
-obook.on('ticker', function(ticker){
+mtgox.on('ticker', function(ticker){
   console.log("high: "+ticker.high.display_short+
               " low: "+ticker.low.display_short+
               " last: "+ticker.last.display_short)
 })
+
+mtgox.connect('usd')
+
 $ node easyticker.js
 high: $127.30 low: $115.20 last: $126.00
 high: $127.30 low: $115.20 last: $126.78
@@ -22,20 +21,21 @@ high: $127.30 low: $115.20 last: $126.78
 ```
 
 # Methods
-* connect(socketio, 'usd')
+* connect('usd')
 
-Connect to MtGox using the socketio object. Listen to depth/trade/ticker messages for the given currency.
+Connect to MtGox using websockets. Listen to depth/trade/ticker messages for BTC, listed in USD.
 
 * subscribe(channel_name)
 
-Issue a subscribe request for a channel. Currently supported is 'lag'. See example.js for usage.
+Issue a subscribe request for a channel. Currently supported is 'trades', 'ticker' and
+'depth'. See example.js for usage.
 
 # Signals
 
-## socket.io signals
+## websocket signals
 
-* on('connect')
-* on('disconnect')
+* on('connect', function())
+* on('disconnect', function())
 
 ## mtgox signals
 * on('subscribe', function(channel_name))
