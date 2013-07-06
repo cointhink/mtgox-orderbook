@@ -1,13 +1,13 @@
 {
   "name": "mtgox-orderbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Don Park <donp@donp.org>",
   "license": "BSD",
   "main": "./index.js",
   "description": "Simple access to the Mt.Gox bitcoin orderbook.",
   "dependencies": {
-    "websocket":"1.x"
-    },
+    "websocket": "1.x"
+  },
   "devDependencies": {
     "vows": ">=0.7.0",
     "nodemock": "0.2.x"
