@@ -2,11 +2,15 @@ var mtgox = require('../mtgox-orderbook')
 
 mtgox.on('connect', function(trade){
   console.log('connected to mtgox')
-  mtgox.subscribe('ticker')
+  mtgox.subscribe('lag')
 })
 
 mtgox.on('subscribe', function(channel_id){
   console.log('subscribed '+channel_id)
+})
+
+mtgox.on('remark', function(remark){
+  console.log('remark '+JSON.stringify(remark))
 })
 
 mtgox.on('lag', function(lag){
