@@ -1,6 +1,10 @@
 var util = require('util')
 var events = require('events')
+var crypto = require('crypto');
 var WebSocketClient = require('websocket').client;
+var uuid = require('node-uuid');
+
+var open_calls = []
 
 var Mtgox = function(){
   var that = this
@@ -10,6 +14,11 @@ var Mtgox = function(){
 
   this.setup = function(ws) {
     this.ws = ws || new WebSocketClient();
+  }
+
+  this.credentials = function(creds){
+    this.creds = creds
+    this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
   }
 
   this.connect = function(currency){
@@ -46,6 +55,31 @@ var Mtgox = function(){
 
   this._send = function(message){
     that.connection.sendUTF(JSON.stringify(message))
+  }
+
+  this.call = function(endpoint, params, cb){
+    var id = uuid.v4()
+    var call = {
+      "id": id,
+      "nonce": uuid.v4(),
+      "call": endpoint,
+      "params": params,
+      "item": this.currency_code
+    }
+
+    var call_json = JSON.stringify(call)
+    var signed_call = this.signing.update(call_json).digest('base64')
+    var short_key = this.creds.key.replace('-','')
+
+    var req = {
+      "op": "call",
+      "id": id,
+      "call": short_key+signed_call+call_json,
+      "context": "mtgox"
+    }
+
+    that._send(req)
+    open_calls.push({id:id, cb:cb})
   }
 
   this.unsubscribe = function(channel){
@@ -85,6 +119,9 @@ var Mtgox = function(){
 
       this._private_dispatch(channel_name, currency, msg[msg.private])
     }
+    if(msg.op == "result") {
+      this._call_result(msg)
+    }
   }
 
   this._private_dispatch = function(channel_name, currency, payload){
@@ -97,6 +134,9 @@ var Mtgox = function(){
     } else if (channel_name == "trade" && currency == "lag") {
       this.emit("lag", payload)
     }
+  }
+
+  this._call_result = function(msg){
   }
 
   this._update_orderbook = function(depth){

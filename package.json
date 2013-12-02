@@ -1,12 +1,13 @@
 {
   "name": "mtgox-orderbook",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "Don Park <donp@donp.org>",
   "license": "BSD",
   "main": "./index.js",
-  "description": "Simple access to the Mt.Gox bitcoin orderbook.",
+  "description": "Simple websocket access to the Mt.Gox bitcoin orderbook.",
   "dependencies": {
-    "websocket": "1.x"
+    "websocket": "1.x",
+    "node-uuid": "1.x"
   },
   "devDependencies": {
     "vows": ">=0.7.0",
@@ -15,6 +16,7 @@
   "scripts": {
     "test": "vows --isolate --spec test/*.js"
   },
+  "repository": { "type" : "git", "url" : "https://github.com/cointhink/mtgox-orderbook.git" },
   "readmeFilename": "README.md",
   "directories": {
     "test": "test"
@@ -22,7 +24,7 @@
   "keywords": [
     "bitcoin",
     "mtgox",
-    "socket.io"
+    "websocket"
   ],
   "engines": {
     "node": ">=0.8"
