@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var WebSocketClient = require('websocket').client;
 var uuid = require('node-uuid');
 
-var open_calls = []
+var open_calls = {}
 
 var Mtgox = function(){
   var that = this
@@ -64,7 +64,8 @@ var Mtgox = function(){
       "nonce": uuid.v4(),
       "call": endpoint,
       "params": params,
-      "item": this.currency_code
+      "item": this.coin_code,
+      "currency": this.currency_code
     }
 
     var call_json = JSON.stringify(call)
@@ -79,7 +80,7 @@ var Mtgox = function(){
     }
 
     that._send(req)
-    open_calls.push({id:id, cb:cb})
+    open_calls[id] = {params: call, callback: cb}
   }
 
   this.unsubscribe = function(channel){
@@ -119,8 +120,11 @@ var Mtgox = function(){
 
       this._private_dispatch(channel_name, currency, msg[msg.private])
     }
-    if(msg.op == "result") {
-      this._call_result(msg)
+    if(msg.id){
+      var callback = open_calls[msg.id]
+      if(callback){
+        this._call_result(callback, msg)
+      }
     }
   }
 
@@ -136,7 +140,12 @@ var Mtgox = function(){
     }
   }
 
-  this._call_result = function(msg){
+  this._call_result = function(call, msg){
+    if(msg.success){
+      call.callback(null, msg)
+    } else {
+      call.callback(msg, call.params)
+    }
   }
 
   this._update_orderbook = function(depth){
