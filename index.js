@@ -54,14 +54,15 @@ var Mtgox = function(){
   }
 
   this._send = function(message){
-    that.connection.sendUTF(JSON.stringify(message))
+    var msg = JSON.stringify(message)
+    that.connection.sendUTF(msg)
   }
 
   this.call = function(endpoint, params, cb){
-    var id = uuid.v4()
+    var id = uuid.v4().replace('-','')
     var call = {
       "id": id,
-      "nonce": uuid.v4(),
+      "nonce": uuid.v4().replace('-',''),
       "call": endpoint,
       "params": params,
       "item": this.coin_code,
@@ -69,13 +70,13 @@ var Mtgox = function(){
     }
 
     var call_json = JSON.stringify(call)
-    var signed_call = this.signing.update(call_json).digest('base64')
+    var sig = this.signing.update(call_json).digest()
     var short_key = this.creds.key.replace('-','')
-
+    var encoded_call = (new Buffer(short_key+sig+call_json)).toString('base64')
     var req = {
       "op": "call",
       "id": id,
-      "call": short_key+signed_call+call_json,
+      "call": encoded_call,
       "context": "mtgox"
     }
 
