@@ -59,27 +59,26 @@ var Mtgox = function(){
   }
 
   this.call = function(endpoint, params, cb){
-    var id = uuid.v4().replace('-','')
+    var id = uuid.v4().replace(/-/g,'')
     var call = {
       "id": id,
-      "nonce": uuid.v4().replace('-',''),
+      "nonce": uuid.v4().replace(/-/g,''),
       "call": endpoint,
       "params": params,
       "item": this.coin_code,
       "currency": this.currency_code
     }
 
-    var call_json = JSON.stringify(call)
-    var sig = this.signing.update(call_json).digest()
-    var short_key = this.creds.key.replace('-','')
-    var encoded_call = (new Buffer(short_key+sig+call_json)).toString('base64')
+    var key_buf = new Buffer(this.creds.key.replace(/-/g,''))
+    var call_json_buf = new Buffer(JSON.stringify(call))
+    var sig_buf = this.signing.update(call_json_buf).digest()
+    var call_buf = Buffer.concat([key_buf, sig_buf, call_json_buf])
     var req = {
       "op": "call",
       "id": id,
-      "call": encoded_call,
-      "context": "mtgox"
+      "call": call_buf.toString('base64'),
+      "context": "mtgox.com"
     }
-
     that._send(req)
     open_calls[id] = {params: call, callback: cb}
   }
