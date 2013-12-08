@@ -69,7 +69,7 @@ var Mtgox = function(){
       "currency": this.currency_code
     }
 
-    var key_buf = new Buffer(this.creds.key.replace(/-/g,''))
+    var key_buf = new Buffer(this.creds.key.replace(/-/g,''), 'hex')
     var call_json_buf = new Buffer(JSON.stringify(call))
     var sig_buf = this.signing.update(call_json_buf).digest()
     var call_buf = Buffer.concat([key_buf, sig_buf, call_json_buf])
