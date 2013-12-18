@@ -4,8 +4,9 @@ Signals for the Mt.Gox orderbook from the streaming API.
 ```
 $ npm install mtgox-orderbook
 $ cat > easyticker.js
-var mtgox    = require('mtgox-orderbook')
+var mtgox = require('mtgox-orderbook')
 
+mtgox.setup('websocket') // optional credentials
 mtgox.on('ticker', function(ticker){
   console.log("high: "+ticker.high.display_short+
               " low: "+ticker.low.display_short+
