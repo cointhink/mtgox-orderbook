@@ -1,61 +1,48 @@
 var util = require('util')
 var events = require('events')
 var crypto = require('crypto');
-var WebSocketClient = require('websocket').client;
 var uuid = require('node-uuid');
 
+// choice of streaming interface
+var stream = require('./stream-websocket.js')
+
+// queue of open calls
 var open_calls = {}
 
 var Mtgox = function(){
   var that = this
   var message_count = 0
-  this.ws_url = "ws://websocket.mtgox.com/mtgox"
   this.coin_code = 'BTC'
 
-  this.setup = function(ws) {
-    this.ws = ws || new WebSocketClient();
-  }
-
-  this.credentials = function(creds){
+  this.setup = function(creds) {
     this.creds = creds
     this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
+    stream.setup()
+    this._stream_hookup()
   }
 
   this.connect = function(currency){
-    if(typeof(this.ws) == 'undefined'){
-      this.setup()
-    }
-    this._ws_setup()
     this.currency_code = currency.toUpperCase()
-    var url = this.ws_url+'?Currency='+this.currency_code
-    this.ws.connect(url, null, "http://websocket.mtgox.com");
-    return this
+    stream.connect(this.currency_code)
   }
 
-  this._ws_setup = function(){
-    that.ws.on('connect', function(connection) {
-      that.connected(connection)
+  this._stream_hookup = function(){
+    stream.on('connect', function() {
       that.emit('connect')
-
-      connection.on('message', function(data){
-        if (data.type === 'utf8') {
-          message = JSON.parse(data.utf8Data)
-          that.emit('message', message)
-          that.event(message)
-          message_count += 1
-        }
-      })
-
-      connection.on('close', function(){
-        that.emit('disconnect')
-        that.disconnected()
-      })
+    })
+    stream.on('message', function(data){
+      that.emit('message', message)
+      that.event(message)
+      message_count += 1
+    })
+    stream.on('close', function(){
+      that.emit('disconnect')
     })
   }
 
   this._send = function(message){
     var msg = JSON.stringify(message)
-    that.connection.sendUTF(msg)
+    stream.send(message)
   }
 
   this.call = function(endpoint, params, cb){
@@ -149,7 +136,6 @@ var Mtgox = function(){
   }
 
   this._update_orderbook = function(depth){
-
   }
 
   this.disconnected = function(){}
