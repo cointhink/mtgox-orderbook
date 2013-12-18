@@ -15,8 +15,10 @@ var Mtgox = function(){
   this.coin_code = 'BTC'
 
   this.setup = function(creds) {
-    this.creds = creds
-    this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
+    if(creds){
+      this.creds = creds
+      this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
+    }
     stream.setup()
     this._stream_hookup()
   }
