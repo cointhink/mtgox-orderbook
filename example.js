@@ -1,6 +1,6 @@
 var mtgox = require('../mtgox-orderbook')
 
-mtgox.setup() // optional access credentials
+mtgox.setup('websocket') // optional access credentials
 
 mtgox.on('connect', function(trade){
   console.log('connected to mtgox')

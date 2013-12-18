@@ -4,7 +4,7 @@ var crypto = require('crypto');
 var uuid = require('node-uuid');
 
 // choice of streaming interface
-var stream = require('./stream-websocket.js')
+var stream_websocket = require('./stream-websocket.js')
 
 // queue of open calls
 var open_calls = {}
@@ -14,11 +14,12 @@ var Mtgox = function(){
   var message_count = 0
   this.coin_code = 'BTC'
 
-  this.setup = function(creds) {
+  this.setup = function(api, creds) {
     if(creds){
       this.creds = creds
       this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
     }
+    stream = stream_websocket
     stream.setup()
     this._stream_hookup()
   }
