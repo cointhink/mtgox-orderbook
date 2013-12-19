@@ -17,10 +17,6 @@ var Mtgox = function(){
   this.coin_code = 'BTC'
 
   this.setup = function(api, creds) {
-    if(creds){
-      this.creds = creds
-      this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
-    }
     if(api == "websocket") {
       this.stream = stream_websocket
     } else if(api == "pubnub"){
@@ -30,7 +26,7 @@ var Mtgox = function(){
     } else {
       console.error("Error: no mtgox api specified!")
     }
-    this.stream.setup()
+    this.stream.setup(creds)
     this._stream_hookup()
   }
 

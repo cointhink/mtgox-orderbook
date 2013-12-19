@@ -10,9 +10,9 @@ var StreamPubNub = function(){
                    "ticker.BTCUSD": "d5f06780-30a8-4a48-a2f8-7ed181b4a13f"
                  }
 
-  this.setup = function(publish_key) {
+  this.setup = function(creds) {
     this.pubnub = pubnub.init({
-      publish_key   : publish_key,
+      publish_key   : creds.publish_key,
       subscribe_key : mtgox_subscribe_key
     });
   }

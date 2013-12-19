@@ -6,8 +6,12 @@ var StreamWebSocket = function(){
   var that = this
   var ws_url = "ws://websocket.mtgox.com/mtgox"
 
-  this.setup = function() {
+  this.setup = function(creds) {
     this.ws = new WebSocketClient();
+    if(creds){
+      this.creds = creds
+      this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
+    }
     this.hookup()
   }
 
