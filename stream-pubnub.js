@@ -48,12 +48,12 @@ var StreamPubNub = function(){
   }
 
   this.call = function(call){
-    console.dir(this.private_keys)
+    console.dir(this.private_keys())
   }
 
   this.private_keys = function(){
     var method = "stream/private_get"
-    http_api.call(creds, method, {})
+    http_api.call(this.creds, method, {})
   }
 }
 
