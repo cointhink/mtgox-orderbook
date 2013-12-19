@@ -13,7 +13,6 @@ var StreamWebSocket = function(){
 
   this.connect = function(currency_code){
     var url = ws_url+'?Currency='+this.currency_code
-    console.log('connecting '+ws_url)
     var context = "http://websocket.mtgox.com"
     this.ws.connect(url, null, context);
   }

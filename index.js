@@ -107,7 +107,6 @@ var Mtgox = function(){
   this.connected = function(connection){ that.connection = connection }
 
   this.event = function(msg){
-    console.dir(msg)
     if(msg.op == "subscribe") {
       this.emit('subscribe', msg.channel)
     }
@@ -130,12 +129,12 @@ var Mtgox = function(){
 
   this._private_dispatch = function(op, payload){
     if(op == "depth"){
-      console.log(payload.currency)
-      console.log(this.currency_code)
       if(payload.currency == this.currency_code){
         this.emit(op, payload)
         this._update_orderbook(payload)
       }
+    } else if (op == "ticker") {
+      this.emit("ticker", payload)
     } else if (op == "lag") {
       this.emit("lag", payload)
     }

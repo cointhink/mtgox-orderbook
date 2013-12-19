@@ -84,6 +84,94 @@ vows.describe('mtgox-orderbook').addBatch({
       },
       'signal': function (depth) {
         assert.equal(depth.price, '116.92')
+      },
+      'ticker message':{
+        topic: function(){
+          var that = this
+          mtgox.on('ticker', function(payload){
+            that.callback(null, payload)
+          })
+          mtgox.stream.emit('message',
+            { channel: 'd5f06780-30a8-4a48-a2f8-7ed181b4a13f',
+              channel_name: 'ticker.BTCUSD',
+              op: 'private',
+              origin: 'broadcast',
+              private: 'ticker',
+              ticker:
+               { high:
+                  { value: '715.00000',
+                    value_int: '71500000',
+                    display: '$715.00000',
+                    display_short: '$715.00',
+                    currency: 'USD' },
+                 low:
+                  { value: '522.44000',
+                    value_int: '52244000',
+                    display: '$522.44000',
+                    display_short: '$522.44',
+                    currency: 'USD' },
+                 avg:
+                  { value: '626.68754',
+                    value_int: '62668754',
+                    display: '$626.68754',
+                    display_short: '$626.69',
+                    currency: 'USD' },
+                 vwap:
+                  { value: '631.47196',
+                    value_int: '63147196',
+                    display: '$631.47196',
+                    display_short: '$631.47',
+                    currency: 'USD' },
+                 vol:
+                  { value: '44547.39179112',
+                    value_int: '4454739179112',
+                    display: '44,547.39179112 BTC',
+                    display_short: '44,547.39 BTC',
+                    currency: 'BTC' },
+                 last_local:
+                  { value: '690.00000',
+                    value_int: '69000000',
+                    display: '$690.00000',
+                    display_short: '$690.00',
+                    currency: 'USD' },
+                 last_orig:
+                  { value: '690.00000',
+                    value_int: '69000000',
+                    display: '$690.00000',
+                    display_short: '$690.00',
+                    currency: 'USD' },
+                 last_all:
+                  { value: '690.00000',
+                    value_int: '69000000',
+                    display: '$690.00000',
+                    display_short: '$690.00',
+                    currency: 'USD' },
+                 last:
+                  { value: '690.00000',
+                    value_int: '69000000',
+                    display: '$690.00000',
+                    display_short: '$690.00',
+                    currency: 'USD' },
+                 buy:
+                  { value: '687.00000',
+                    value_int: '68700000',
+                    display: '$687.00000',
+                    display_short: '$687.00',
+                    currency: 'USD' },
+                 sell:
+                  { value: '690.00000',
+                    value_int: '69000000',
+                    display: '$690.00000',
+                    display_short: '$690.00',
+                    currency: 'USD' },
+                 item: 'BTC',
+                 now: '1387482265266026' },
+              stamp: 1387482265266378 }
+            )
+        },
+        'signal': function (ticker) {
+          assert.equal(ticker.last.value, '690.00000')
+        },
       }
     }
 }).export(module)

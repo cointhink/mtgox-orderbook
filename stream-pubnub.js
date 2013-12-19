@@ -20,7 +20,6 @@ var StreamPubNub = function(){
   this.connect = function(currency_code){
     var channel_name = 'ticker.BTC'+currency_code
     var channel = channels[channel_name]
-    console.log('connecting pubnub '+channel_name)
     this.pubnub.subscribe({channel: channel, callback: this.cb})
   }
 
