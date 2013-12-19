@@ -6,35 +6,26 @@ var StreamPubNub = function(){
   var that = this
   var mtgox_subscribe_key = "sub-c-50d56e1e-2fd9-11e3-a041-02ee2ddab7fe"
 
+  var channels = { "depth.BTCUSD": "24e67e0d-1cad-4cc0-9e7a-f8523ef460fe",
+                   "ticker.BTCUSD": "d5f06780-30a8-4a48-a2f8-7ed181b4a13f"
+                 }
+
   this.setup = function(publish_key) {
-    pubnub.init({
+    this.pubnub = pubnub.init({
       publish_key   : publish_key,
       subscribe_key : mtgox_subscribe_key
     });
-    this.hookup()
   }
 
   this.connect = function(currency_code){
-    console.log('connecting')
-    var url = ws_url+'?Currency='+this.currency_code
-    var context = "http://websocket.mtgox.com"
-    this.ws.connect(url, null, context);
+    var channel_name = 'ticker.BTC'+currency_code
+    var channel = channels[channel_name]
+    console.log('connecting pubnub '+channel_name)
+    this.pubnub.subscribe({channel: channel, callback: this.cb})
   }
 
-  this.hookup = function(){
-    this.ws.on('connect', function(connection) {
-      that.connection = connection
-      that.emit('connect')
-      connection.on('message', function(data){
-        if (data.type === 'utf8') {
-          message = JSON.parse(data.utf8Data)
-          that.emit('message', message)
-        }
-      })
-      connection.on('close', function(){
-        that.emit('close')
-      })
-    })
+  this.cb = function(message){
+    that.emit('message', message)
   }
 
   this.send = function(message){

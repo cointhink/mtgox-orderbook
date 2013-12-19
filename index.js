@@ -43,7 +43,7 @@ var Mtgox = function(){
     this.stream.on('connect', function() {
       that.emit('connect')
     })
-    this.stream.on('message', function(data){
+    this.stream.on('message', function(message){
       that.emit('message', message)
       that.event(message)
       message_count += 1
