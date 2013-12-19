@@ -1,4 +1,5 @@
 var util = require('util')
+var crypto = require('crypto');
 var events = require('events')
 var WebSocketClient = require('websocket').client;
 
@@ -38,7 +39,22 @@ var StreamWebSocket = function(){
   }
 
   this.send = function(message){
-    this.connection.sendUTF(message)
+    var msg = JSON.stringify(message)
+    this.connection.sendUTF(msg)
+  }
+
+  this.call = function(call) {
+    var key_buf = new Buffer(this.creds.key.replace(/-/g,''), 'hex')
+    var call_json_buf = new Buffer(JSON.stringify(call))
+    var sig_buf = this.signing.update(call_json_buf).digest()
+    var call_buf = Buffer.concat([key_buf, sig_buf, call_json_buf])
+    var req = {
+      "op": "call",
+      "id": call.id,
+      "call": call_buf.toString('base64'),
+      "context": "mtgox.com"
+    }
+    this.send(req)
   }
 }
 

@@ -1,6 +1,5 @@
 var util = require('util')
 var events = require('events')
-var crypto = require('crypto');
 var uuid = require('node-uuid');
 
 // choice of streaming interface
@@ -53,7 +52,6 @@ var Mtgox = function(){
   }
 
   this._send = function(message){
-    var msg = JSON.stringify(message)
     this.stream.send(message)
   }
 
@@ -67,18 +65,7 @@ var Mtgox = function(){
       "item": this.coin_code,
       "currency": this.currency_code
     }
-
-    var key_buf = new Buffer(this.creds.key.replace(/-/g,''), 'hex')
-    var call_json_buf = new Buffer(JSON.stringify(call))
-    var sig_buf = this.signing.update(call_json_buf).digest()
-    var call_buf = Buffer.concat([key_buf, sig_buf, call_json_buf])
-    var req = {
-      "op": "call",
-      "id": id,
-      "call": call_buf.toString('base64'),
-      "context": "mtgox.com"
-    }
-    that._send(req)
+    this.stream.call(call)
     open_calls[id] = {params: call, callback: cb}
   }
 
