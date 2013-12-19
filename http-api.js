@@ -1,7 +1,7 @@
 var request = require('request')
 
 module.exports = {
-  call: function(creds, method, params){
+  call: function(creds, method, params, cb){
     var api_url = "https://mtgox.com/api/2/"
     console.log('call method '+method)
     var params = { method: 'post',
@@ -9,8 +9,9 @@ module.exports = {
                    headers: {'Rest-Key': creds.key,
                              'Rest-Sign':  ""}
                  }
-    request.post(params)
+    request(params, cb)
   },
+
   nonce: function(){
     return Date.now()
   }

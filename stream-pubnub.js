@@ -12,12 +12,12 @@ var StreamPubNub = function(){
                    "trade.lag": "85174711-be64-4de1-b783-0628995d7914"
                  }
 
-  this.setup = function(creds, http_api) {
+  this.setup = function(creds) {
     this.pubnub = pubnub.init({
       publish_key   : creds && creds.publish_key ,
       subscribe_key : mtgox_subscribe_key
     });
-    this.http_api = http_api
+    this.creds = creds
   }
 
   this.connect = function(currency_code){
@@ -53,7 +53,7 @@ var StreamPubNub = function(){
 
   this.private_keys = function(){
     var method = "stream/private_get"
-    http_api.call(this.creds, method, {})
+    http_api.call(this.creds, method, {}, function(e){ console.log('keys callback '+e)})
   }
 }
 
