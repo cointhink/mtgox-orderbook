@@ -20,6 +20,14 @@ var StreamWebSocket = function(){
     var url = ws_url+'?Currency='+this.currency_code
     var context = "http://websocket.mtgox.com"
     this.ws.connect(url, null, context);
+    // depth and ticker are auto-subscribed
+  }
+
+  this.subscribe = function(channel){
+    var currencies = 'BTC'+this.currency_code
+    var subscribe_msg = {"op": "mtgox.subscribe",
+                         "type": channel+"."+currencies}
+    this.send(subscribe_msg)
   }
 
   this.hookup = function(){

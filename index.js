@@ -82,9 +82,7 @@ var Mtgox = function(){
   }
 
   this.subscribe = function(channel){
-    var subscribe_msg = {"op": "mtgox.subscribe",
-                         "type": channel}
-    that._send(subscribe_msg)
+    this.stream.subscribe(channel)
   }
 
   this.connected = function(connection){ that.connection = connection }

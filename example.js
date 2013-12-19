@@ -1,10 +1,13 @@
 var mtgox = require('../mtgox-orderbook')
 
-mtgox.setup('websocket') // optional access credentials
+mtgox.setup('websocket')
+//mtgox.setup('pubnub')
 
 mtgox.on('connect', function(trade){
   console.log('connected to mtgox')
   mtgox.subscribe('lag')
+  mtgox.subscribe('depth')
+  mtgox.subscribe('ticker')
 })
 
 mtgox.on('subscribe', function(channel_id){
