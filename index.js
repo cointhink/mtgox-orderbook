@@ -6,6 +6,7 @@ var uuid = require('node-uuid');
 // choice of streaming interface
 var stream_websocket = require('./stream-websocket.js')
 var stream_pubnub = require('./stream-pubnub.js')
+var stream_echo = require('./stream-echo.js')
 
 // queue of open calls
 var open_calls = {}
@@ -24,6 +25,8 @@ var Mtgox = function(){
       this.stream = stream_websocket
     } else if(api == "pubnub"){
       this.stream = stream_pubnub
+    } else if(api == "echo"){
+      this.stream = stream_echo // unittests
     } else {
       console.error("Error: no mtgox api specified!")
     }
@@ -104,6 +107,7 @@ var Mtgox = function(){
   this.connected = function(connection){ that.connection = connection }
 
   this.event = function(msg){
+    console.dir(msg)
     if(msg.op == "subscribe") {
       this.emit('subscribe', msg.channel)
     }
@@ -114,11 +118,7 @@ var Mtgox = function(){
       this.emit('remark', msg.message)
     }
     if(msg.op == "private") {
-      var parts = msg.channel_name.split('.')
-      var channel_name = parts[0]
-      var currency = parts[1]
-
-      this._private_dispatch(channel_name, currency, msg[msg.private])
+      this._private_dispatch(msg.private, msg[msg.private])
     }
     if(msg.id){
       var callback = open_calls[msg.id]
@@ -128,14 +128,15 @@ var Mtgox = function(){
     }
   }
 
-  this._private_dispatch = function(channel_name, currency, payload){
-    if(currency == this.coin_code ||
-       currency == this.coin_code+this.currency_code) {
-      this.emit(channel_name, payload)
-      if(channel_name == "depth"){
+  this._private_dispatch = function(op, payload){
+    if(op == "depth"){
+      console.log(payload.currency)
+      console.log(this.currency_code)
+      if(payload.currency == this.currency_code){
+        this.emit(op, payload)
         this._update_orderbook(payload)
       }
-    } else if (channel_name == "trade" && currency == "lag") {
+    } else if (op == "lag") {
       this.emit("lag", payload)
     }
   }

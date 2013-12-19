@@ -15,9 +15,9 @@ vows.describe('mtgox-orderbook').addBatch({
           // vowjs insists on first param error
           that.callback(null, payload)
         })
-        mtgox.setup(mockio)
+        mtgox.setup('echo')
         mtgox.connect('usd')
-        mockio.emit('connect')
+        mtgox.stream.emit('connect')
       },
       'connection succeeds': function () {
         assert.isTrue(true);
@@ -29,9 +29,9 @@ vows.describe('mtgox-orderbook').addBatch({
         mtgox.on('subscribe', function(payload){
           that.callback(null, payload)
         })
-        mockio.emit('message',
-          { op: 'subscribe',
-            channel: 'dbf1dee9-4f2e-4a08-8cb7-748919a71b21' })
+        mtgox.stream.emit('message',
+                         { op: 'subscribe',
+                           channel: 'dbf1dee9-4f2e-4a08-8cb7-748919a71b21' })
       },
       'signal': function (channel) {
         assert.equal(channel, 'dbf1dee9-4f2e-4a08-8cb7-748919a71b21')
@@ -43,7 +43,7 @@ vows.describe('mtgox-orderbook').addBatch({
         mtgox.on('lag', function(payload){
           that.callback(null, payload)
         })
-        mockio.emit('message',
+        mtgox.stream.emit('message',
           { channel: '85174711-be64-4de1-b783-0628995d7914',
             channel_name: 'trade.lag',
             op: 'private',
@@ -64,7 +64,7 @@ vows.describe('mtgox-orderbook').addBatch({
         mtgox.on('depth', function(payload){
           that.callback(null, payload)
         })
-        mockio.emit('message',
+        mtgox.stream.emit('message',
           { channel: '24e67e0d-1cad-4cc0-9e7a-f8523ef460fe',
             channel_name: 'depth.BTCUSD',
             op: 'private',
