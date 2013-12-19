@@ -5,6 +5,7 @@ var uuid = require('node-uuid');
 
 // choice of streaming interface
 var stream_websocket = require('./stream-websocket.js')
+var stream_pubnub = require('./stream-pubnub.js')
 
 // queue of open calls
 var open_calls = {}
@@ -19,33 +20,42 @@ var Mtgox = function(){
       this.creds = creds
       this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
     }
-    stream = stream_websocket
-    stream.setup()
+    if(api == "websocket") {
+      this.stream = stream_websocket
+    } else if(api == "pubnub"){
+      this.stream = stream_pubnub
+    } else {
+      console.error("Error: no mtgox api specified!")
+    }
+    this.stream.setup()
     this._stream_hookup()
   }
 
   this.connect = function(currency){
+    if(!this.stream) {
+      this.setup('websocket') // compatibility
+    }
     this.currency_code = currency.toUpperCase()
-    stream.connect(this.currency_code)
+    this.stream.connect(this.currency_code)
   }
 
   this._stream_hookup = function(){
-    stream.on('connect', function() {
+    this.stream.on('connect', function() {
       that.emit('connect')
     })
-    stream.on('message', function(data){
+    this.stream.on('message', function(data){
       that.emit('message', message)
       that.event(message)
       message_count += 1
     })
-    stream.on('close', function(){
+    this.stream.on('close', function(){
       that.emit('disconnect')
     })
   }
 
   this._send = function(message){
     var msg = JSON.stringify(message)
-    stream.send(message)
+    this.stream.send(message)
   }
 
   this.call = function(endpoint, params, cb){
