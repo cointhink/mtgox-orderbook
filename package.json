@@ -8,7 +8,8 @@
   "dependencies": {
     "websocket": "1.x",
     "node-uuid": "1.x",
-    "pubnub":"3.5.x"
+    "pubnub":"3.5.x",
+    "request":"2.x"
   },
   "devDependencies": {
     "vows": ">=0.7.0",
