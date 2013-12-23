@@ -29,7 +29,7 @@ var StreamWebSocket = function(){
       subscribe_msg.op = "mtgox.subscribe"
       subscribe_msg.type = channel
     }
-    if(channel.length == 75){ // private channel
+    if(channel.length == 75){ // private channel (good for 24 hours)
       subscribe_msg.op = "mtgox.subscribe"
       subscribe_msg.key = channel
     }
