@@ -59,7 +59,7 @@ var Mtgox = function(){
     var id = uuid.v4().replace(/-/g,'')
     var call = {
       "id": id,
-      "nonce": uuid.v4().replace(/-/g,''),
+      "nonce": Date.now()*1000000,
       "call": endpoint,
       "params": params,
       "item": this.coin_code,
