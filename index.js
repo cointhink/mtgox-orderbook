@@ -122,8 +122,8 @@ var Mtgox = function(){
   }
 
   this._call_result = function(call, msg){
-    if(msg.success){
-      call.callback(null, msg)
+    if(msg.result){
+      call.callback(null, msg.result)
     } else {
       call.callback(msg, call.params)
     }
