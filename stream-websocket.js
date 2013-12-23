@@ -24,7 +24,7 @@ var StreamWebSocket = function(){
 
   this.subscribe = function(channel){
     var subscribe_msg = {}
-    var channel_helper = ['ticker', 'depth', 'trade','lag'].some(function(c){return c==channel})
+    var channel_helper = ['ticker', 'depth', 'trades','lag'].some(function(c){return c==channel})
     if(channel_helper){
       subscribe_msg.op = "mtgox.subscribe"
       subscribe_msg.type = channel
