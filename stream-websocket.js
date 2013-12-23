@@ -9,10 +9,7 @@ var StreamWebSocket = function(){
 
   this.setup = function(creds) {
     this.ws = new WebSocketClient();
-    if(creds){
-      this.creds = creds
-      this.signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
-    }
+    this.creds = creds
     this.hookup()
   }
 
@@ -56,7 +53,8 @@ var StreamWebSocket = function(){
   this.call = function(call) {
     var key_buf = new Buffer(this.creds.key.replace(/-/g,''), 'hex')
     var call_json_buf = new Buffer(JSON.stringify(call))
-    var sig_buf = this.signing.update(call_json_buf).digest()
+    var signing = crypto.createHmac('sha512', new Buffer(this.creds.secret, 'base64'));
+    var sig_buf = signing.update(call_json_buf).digest()
     var call_buf = Buffer.concat([key_buf, sig_buf, call_json_buf])
     var req = {
       "op": "call",
