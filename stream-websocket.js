@@ -23,8 +23,21 @@ var StreamWebSocket = function(){
   }
 
   this.subscribe = function(channel){
-    var subscribe_msg = {"op": "mtgox.subscribe",
-                         "type": channel}
+    var subscribe_msg = {}
+    var channel_helper = ['ticker', 'depth', 'trade','lag'].some(function(c){return c==channel})
+    if(channel_helper){
+      subscribe_msg.op = "mtgox.subscribe"
+      subscribe_msg.type = channel
+    }
+    if(channel.length == 75){ // private channel
+      subscribe_msg.op = "mtgox.subscribe"
+      subscribe_msg.key = channel
+    }
+    if(channel.length == 36){ // public channel uuid
+      subscribe_msg.op = "subscribe"
+      subscribe_msg.channel = channel
+    }
+
     this.send(subscribe_msg)
   }
 
