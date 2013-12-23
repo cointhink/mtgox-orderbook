@@ -1,6 +1,7 @@
 var util = require('util')
 var events = require('events')
 var uuid = require('node-uuid');
+var num = require('num')
 
 // choice of streaming interface
 var stream_websocket = require('./stream-websocket.js')
@@ -27,6 +28,7 @@ var Mtgox = function(){
     }
     this.stream.setup(creds)
     this._stream_hookup()
+    this.nonce = (Date.now()*1000000).toString()
   }
 
   this.connect = function(currency){
@@ -59,7 +61,7 @@ var Mtgox = function(){
     var id = uuid.v4().replace(/-/g,'')
     var call = {
       "id": id,
-      "nonce": Date.now()*1000000,
+      "nonce": this.nextNonce(),
       "call": endpoint,
       "params": params,
       "item": this.coin_code,
@@ -78,6 +80,11 @@ var Mtgox = function(){
   }
 
   this.connected = function(connection){ that.connection = connection }
+
+  this.nextNonce = function(){
+    this.nonce = num(this.nonce).add(1).toString()
+    return this.nonce
+  }
 
   this.event = function(msg){
     if(msg.op == "subscribe") {
