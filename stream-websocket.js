@@ -16,7 +16,9 @@ var StreamWebSocket = function(){
     this.hookup()
   }
 
-  this.connect = function(currency_code){
+  this.connect = function(coin_code, currency_code){
+    this.currency_code = currency_code
+    this.coin_code = coin_code
     var url = ws_url+'?Currency='+this.currency_code
     var context = "http://websocket.mtgox.com"
     this.ws.connect(url, null, context);
@@ -24,7 +26,7 @@ var StreamWebSocket = function(){
   }
 
   this.subscribe = function(channel){
-    var currencies = 'BTC'+this.currency_code
+    var currencies = this.coin_code+this.currency_code
     var subscribe_msg = {"op": "mtgox.subscribe",
                          "type": channel+"."+currencies}
     this.send(subscribe_msg)
