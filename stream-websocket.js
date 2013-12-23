@@ -28,7 +28,7 @@ var StreamWebSocket = function(){
   this.subscribe = function(channel){
     var currencies = this.coin_code+this.currency_code
     var subscribe_msg = {"op": "mtgox.subscribe",
-                         "type": channel+"."+currencies}
+                         "type": channel}
     this.send(subscribe_msg)
   }
 
