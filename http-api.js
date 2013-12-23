@@ -12,14 +12,14 @@ module.exports = {
     var message = path + "\0" + postData
     var signing = crypto.createHmac('sha512', new Buffer(creds.secret, 'base64'));
     signing.update(message)
-    var params = { method: 'post',
-                   url: url,
-                   headers: {'Rest-Key': creds.key,
-                             'Rest-Sign': signing.digest('base64'),
-                             'Content-type': 'application/x-www-form-urlencoded'},
-                   body: postData
-                 }
-    request(params, cb)
+    var cparams = { method: 'post',
+                    url: url,
+                    headers: {'Rest-Key': creds.key,
+                              'Rest-Sign': signing.digest('base64'),
+                              'Content-type': 'application/x-www-form-urlencoded'},
+                    body: postData
+                  }
+    request(cparams, cb)
   },
 
   nonce: function(){
