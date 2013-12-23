@@ -22,18 +22,33 @@ high: $127.30 low: $115.20 last: $126.78
 ```
 
 # Methods
+* setup('websocket')
+
+Connect to MtGox using the websockets API.
+
+* setup('websocket', {key: "key123", secret: "secretdata=="})
+
+Connect to MtGox using the websockets API and authenticate with the key and token.
+
+* setup('pubnub')
+
+Connect to MtGox using the pubnub API.
+
 * connect('usd')
 
-Connect to MtGox using websockets. Listen to depth/trade/ticker messages for BTC, listed in USD.
+Connect to the streaming API for the bitcoin market denominated in US dollars.
 
 * subscribe(channel_name)
 
-Issue a subscribe request for a channel. Currently supported is 'trades', 'ticker' and
-'depth'. See example.js for usage.
+Issue a subscribe request for a channel. Channel names are 'trades', 'ticker', 'depth', and 'lag'. See example.js for usage. Note websocket connections are auto-subscribed to 'depth' and 'ticker'
+
+* call(method, params, callback)
+
+Send a method call, encrypted with credentials. The callback(error, result) contains the result of the call. Method names for the websocket API come from the HTTP v1 API. See example-auth.js for usage.
 
 # Signals
 
-## websocket signals
+## api maintenance signals
 
 * on('connect', function())
 * on('disconnect', function())
