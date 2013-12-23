@@ -13,11 +13,12 @@ var StreamPubNub = function(){
                  }
 
   this.setup = function(creds) {
-    this.pubnub = pubnub.init({
-      publish_key   : creds && creds.publish_key ,
-      subscribe_key : mtgox_subscribe_key
-    });
-    this.creds = creds
+    pubnub_params = {subscribe_key : mtgox_subscribe_key}
+    if(creds){
+      this.creds = creds
+      pubnub_params.publish_key = creds.publish_key
+    }
+    this.pubnub = pubnub.init(pubnub_params)
   }
 
   this.connect = function(coin_code, currency_code){
@@ -48,14 +49,14 @@ var StreamPubNub = function(){
   }
 
   this.call = function(call){
-    console.dir(this.private_keys())
+    this.private_keys()
   }
 
   this.private_keys = function(){
     var method = "stream/private_get"
     http_api.call(this.creds, method, this.coin_code, this.currency_code, {},
-      function(e){
-        console.log('keys callback '+e)
+      function(e,r,b){
+        if(e){ console.err(b)} else {return r}
       }
     )
   }
