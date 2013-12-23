@@ -34,7 +34,7 @@ var Mtgox = function(){
       this.setup('websocket') // compatibility
     }
     this.currency_code = currency.toUpperCase()
-    this.stream.connect(this.currency_code)
+    this.stream.connect(this.coin_code, this.currency_code)
   }
 
   this._stream_hookup = function(){

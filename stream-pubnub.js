@@ -20,7 +20,8 @@ var StreamPubNub = function(){
     this.creds = creds
   }
 
-  this.connect = function(currency_code){
+  this.connect = function(coin_code, currency_code){
+    this.coin_code = coin_code
     this.currency_code = currency_code
     this.emit('connect')
   }
@@ -30,8 +31,7 @@ var StreamPubNub = function(){
     if(short_channel == 'lag') {
       channel = 'trade.lag'
     } else {
-      var currencies = 'BTC'+this.currency_code
-      channel = short_channel+'.'+currencies
+      channel = short_channel+'.'+this.currency_pair
     }
     this.pubnub.subscribe({channel: channels[channel], callback: this.cb})
   }
@@ -53,7 +53,11 @@ var StreamPubNub = function(){
 
   this.private_keys = function(){
     var method = "stream/private_get"
-    http_api.call(this.creds, method, {}, function(e){ console.log('keys callback '+e)})
+    http_api.call(this.creds, method, this.coin_code, this.currency_code, {},
+      function(e){
+        console.log('keys callback '+e)
+      }
+    )
   }
 }
 
