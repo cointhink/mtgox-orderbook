@@ -50,7 +50,6 @@ var StreamWebSocket = function(){
     var channel = channels[channel.toLowerCase()]
     var unsubscribe_msg = {"op": "unsubscribe",
                            "channel": channel}
-    console.dir(unsubscribe_msg)
     this.send(unsubscribe_msg)
   }
 
