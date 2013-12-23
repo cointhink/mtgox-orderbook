@@ -56,7 +56,7 @@ var StreamPubNub = function(){
     var method = "stream/private_get"
     http_api.call(this.creds, method, this.coin_code, this.currency_code, {},
       function(e,r,b){
-        if(e){ console.err(b)} else {return r}
+        if(e){console.err(b)} else {console.dir(JSON.parse(r.body))}
       }
     )
   }
