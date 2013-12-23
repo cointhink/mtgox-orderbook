@@ -70,15 +70,7 @@ var Mtgox = function(){
   }
 
   this.unsubscribe = function(channel){
-    var channels = {
-      'trades':'dbf1dee9-4f2e-4a08-8cb7-748919a71b21',
-      'ticker':'d5f06780-30a8-4a48-a2f8-7ed181b4a13f',
-      'depth':'24e67e0d-1cad-4cc0-9e7a-f8523ef460fe'
-    }
-    var channel = channels[channel.toLowerCase()]
-    var unsubscribe_msg = {"op": "unsubscribe",
-                           "channel": channel}
-    that._send(unsubscribe_msg)
+    this.stream.unsubscribe(channel)
   }
 
   this.subscribe = function(channel){
