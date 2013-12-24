@@ -14,7 +14,6 @@ var open_calls = {}
 var Mtgox = function(){
   var that = this
   var message_count = 0
-  this.coin_code = 'BTC'
 
   this.setup = function(api, creds) {
     if(api == "websocket") {
@@ -31,10 +30,15 @@ var Mtgox = function(){
     this.nonce = (Date.now()*1000000).toString()
   }
 
-  this.connect = function(currency){
-    if(!this.stream) {
-      this.setup('websocket') // compatibility
+  this.connect = function(coin, currency){
+    if(!currency) { // 0.4 compatibility
+      currency = coin
+      coin = "BTC"
     }
+    if(!this.stream) {
+      this.setup('websocket') // 0.4 compatibility
+    }
+    this.coin_code = coin.toUpperCase()
     this.currency_code = currency.toUpperCase()
     this.stream.connect(this.coin_code, this.currency_code)
   }

@@ -28,11 +28,11 @@ Connect to MtGox using the websockets API.
 
 * setup('websocket', {key: "key123", secret: "secretdata=="})
 
-Connect to MtGox using the websockets API and authenticate with the key and token.
+Connect to MtGox using the websockets API. Store key and token for authenticated calls.
 
 * setup('pubnub')
 
-Connect to MtGox using the pubnub API.
+Connect to MtGox using the pubnub API. Public access only.
 
 * connect('usd')
 
@@ -44,7 +44,11 @@ Issue a subscribe request for a channel. Channel names are 'trades', 'ticker', '
 
 * call(method, params, callback)
 
-Send a method call, encrypted with credentials. The callback(error, result) contains the result of the call. Method names for the websocket API come from the HTTP v1 API. See example-auth.js for usage.
+Send a method call and params, encrypted with credentials, over the stream. 
+Method names come from the HTTP v1 API. 
+The result comes from the stream and is paired to the request, the passed to 
+callback(error, result).
+See example-auth.js for usage.
 
 # Signals
 

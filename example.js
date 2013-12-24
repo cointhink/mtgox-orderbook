@@ -34,4 +34,4 @@ mtgox.on('ticker', function(ticker){
   console.log('ticker! '+JSON.stringify(ticker))
 })
 
-mtgox.connect('usd')
+mtgox.connect('ltc', 'usd')
