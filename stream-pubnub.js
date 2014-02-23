@@ -32,7 +32,7 @@ var StreamPubNub = function(){
     if(short_channel == 'lag') {
       channel = 'trade.lag'
     } else {
-      channel = short_channel+'.'+this.currency_pair
+      channel = short_channel+'.'+this.coin_code+this.currency_code
     }
     this.pubnub.subscribe({channel: channels[channel], callback: this.cb})
   }
